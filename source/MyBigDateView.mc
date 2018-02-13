@@ -25,23 +25,14 @@ class MyBigDateView extends Ui.WatchFace {
     // Update the view
     function onUpdate(dc) {
 
-	    //my Try to show date
-	    
-	   /** 	today.hour,
-	        today.min,
-	        today.sec,
-	        	        today.year
-	          $4$ $5$ $6$ $7$
-	     */    
+	    //show date   
 	    var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 	    var dateString = Lang.format(
-	    "$1$:$2$:$3$",
+	    "$1$, $2$ $3$",
 	    [
-
 	        today.day_of_week,
-	        today.day,
 	        today.month,
-
+	        today.day
 	    ] );
 		System.println(dateString);
 
