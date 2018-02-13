@@ -25,7 +25,30 @@ class MyBigDateView extends Ui.WatchFace {
     // Update the view
     function onUpdate(dc) {
 
-	    //show date   
+		bigDate();
+		currentTime();
+
+        // Call the parent onUpdate function to redraw the layout
+        View.onUpdate(dc);
+    }
+
+    // Called when this View is removed from the screen. Save the
+    // state of this View here. This includes freeing resources from
+    // memory.
+    function onHide() {
+    }
+
+    // The user has just looked at their watch. Timers and animations may be started here.
+    function onExitSleep() {
+    }
+
+    // Terminate any active timers and prepare for slow updates.
+    function onEnterSleep() {
+    }
+    
+    //Date
+    function bigDate() {
+   
 	    var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 	    var dateString = Lang.format(
 	    "$1$, $2$ $3$",
@@ -39,10 +62,12 @@ class MyBigDateView extends Ui.WatchFace {
         //update the view with the date
         var dateView = View.findDrawableById("DateLabel");
         dateView.setText(dateString);
-
-    // my try
-
-        // Get the current time and format it correctly
+       
+	}
+ 
+ 	//Get the current time and format it correctly
+ 	function currentTime() {
+         
         var timeFormat = "$1$:$2$";
         var clockTime = Sys.getClockTime();
         var hours = clockTime.hour;
@@ -62,24 +87,7 @@ class MyBigDateView extends Ui.WatchFace {
         var view = View.findDrawableById("TimeLabel");
         view.setColor(App.getApp().getProperty("ForegroundColor"));
         view.setText(timeString);
-        
-
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
-    }
-
-    // Called when this View is removed from the screen. Save the
-    // state of this View here. This includes freeing resources from
-    // memory.
-    function onHide() {
-    }
-
-    // The user has just looked at their watch. Timers and animations may be started here.
-    function onExitSleep() {
-    }
-
-    // Terminate any active timers and prepare for slow updates.
-    function onEnterSleep() {
-    }
+ 		
+ 	}       
 
 }
