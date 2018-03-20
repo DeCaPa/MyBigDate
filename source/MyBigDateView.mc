@@ -4,8 +4,18 @@ using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 using Toybox.Time.Gregorian;
 using Toybox.Application as App;
+using Toybox.ActivityMonitor;
 
+/**
+
+Pixel Size of each screen this watch face is used for. 
+735xt: 215x180 | 935: 240x240 | fenix 5x 240x240 | fenix 5 240x240
+
+**/
 class MyBigDateView extends Ui.WatchFace {
+
+	var displayHeight = null;
+	var displayWidth = null;
 
     function initialize() {
         WatchFace.initialize();
@@ -24,12 +34,59 @@ class MyBigDateView extends Ui.WatchFace {
 
     // Update the view
     function onUpdate(dc) {
-
+	    
+	    displayHeight = dc.getHeight();
+        displayWidth = dc.getWidth();
+		Sys.println("height: " + displayHeight + " width: " + displayWidth);
+		
 		bigDate();
 		currentTime();
+		
+		//calories
+		var myCalories = ActivityMonitor.getInfo().calories;
+		var caloriesViewString = Lang.format("$1$", [myCalories.format("%02d")]);
+		var caloriesView = View.findDrawableById("CaloriesLabel");
+		caloriesView.setText(caloriesViewString);		
+		
+		//Steps and step goal
+		var mySteps = ActivityMonitor.getInfo().steps;
+		var stepGoal = ActivityMonitor.getInfo().stepGoal;
+		var stepViewString = Lang.format("$1$", [mySteps.format("%02d")]);
+		var stepView = null; 
+		
+		if (mySteps >= stepGoal) {
+			stepView = View.findDrawableById("StepGoalLabel");
+		} else {
+			stepView = View.findDrawableById("StepLabel");
+		}
+		stepView.setText(stepViewString);
+		
+		//battery %
+		var myBattery = Sys.getSystemStats().battery;
+		var batteryViewString = Lang.format("$1$", [myBattery.format("%02d")]);
+		var batteryView = View.findDrawableById("BatteryLabel");
+		batteryView.setText(batteryViewString);
 
+ 		Sys.println("steps: " + mySteps + " battery: " + myBattery + " step Goal: " + stepGoal + " calories: " + myCalories);
+ 		   			
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+        		
+		// load images from drawables
+	    var pic_steps = Ui.loadResource(Rez.Drawables.id_steps);    
+	    var pic_way = Ui.loadResource(Rez.Drawables.id_way);
+	    var pic_kcal = Ui.loadResource(Rez.Drawables.id_kcal);
+	    dc.drawBitmap((displayWidth/2) - 6, 0, pic_steps);
+	    dc.drawBitmap((displayWidth/2) - 6 , 25, pic_way);
+	    dc.drawBitmap((displayWidth/2) - 6, 50, pic_kcal);
+         
+        //draw circles  
+        dc.setColor(0xf4d142, Graphics.COLOR_GREEN);
+        dc.setPenWidth(2);
+    	dc.drawCircle(displayWidth/4, 30, 40);   //45 and 165 fillRectangle(100, 100, 100, 100);
+    	//var fromRight = displayWidth/4
+    	dc.drawCircle(displayWidth - (displayWidth/4), 30, 40);
+
     }
 
     // Called when this View is removed from the screen. Save the
@@ -46,7 +103,7 @@ class MyBigDateView extends Ui.WatchFace {
     function onEnterSleep() {
     }
     
-    //Date
+    /** Get the current date and format it correctly */
     function bigDate() {
    
 	    var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
@@ -57,15 +114,13 @@ class MyBigDateView extends Ui.WatchFace {
 	        today.month,
 	        today.day
 	    ] );
-		System.println(dateString);
+		Sys.println(dateString);
 
-        //update the view with the date
         var dateView = View.findDrawableById("DateLabel");
-        dateView.setText(dateString);
-       
+        dateView.setText(dateString);       
 	}
  
- 	//Get the current time and format it correctly
+ 	/** Get the current time and format it correctly */
  	function currentTime() {
          
         var timeFormat = "$1$:$2$";
@@ -84,10 +139,10 @@ class MyBigDateView extends Ui.WatchFace {
         var timeString = Lang.format(timeFormat, [hours, clockTime.min.format("%02d")]);
 
         // Update the view
-        var view = View.findDrawableById("TimeLabel");
-        view.setColor(App.getApp().getProperty("ForegroundColor"));
-        view.setText(timeString);
- 		
+        var timeView = View.findDrawableById("TimeLabel");
+        
+ 		//use this to read from properties.xml to set color
+        //timeView.setColor(App.getApp().getProperty("ForegroundColor")); 
+        timeView.setText(timeString);	
  	}       
-
 }
