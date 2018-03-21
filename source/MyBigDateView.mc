@@ -67,18 +67,19 @@ class MyBigDateView extends Ui.WatchFace {
 		var batteryView = View.findDrawableById("BatteryLabel");
 		batteryView.setText(batteryViewString);
 
- 		Sys.println("steps: " + mySteps + " battery: " + myBattery + " step Goal: " + stepGoal + " calories: " + myCalories);
+ 		//Sys.println("steps: " + mySteps + " battery: " + myBattery + " step Goal: " + stepGoal + " calories: " + myCalories);
  		   			
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
         		
-		// load images from drawables
+		// load images from drawables and center
 	    var pic_steps = Ui.loadResource(Rez.Drawables.id_steps);    
-	    var pic_way = Ui.loadResource(Rez.Drawables.id_way);
+	    //var pic_way = Ui.loadResource(Rez.Drawables.id_way);
 	    var pic_kcal = Ui.loadResource(Rez.Drawables.id_kcal);
 	    dc.drawBitmap((displayWidth/2) - 6, 0, pic_steps);
-	    dc.drawBitmap((displayWidth/2) - 6 , 25, pic_way);
-	    dc.drawBitmap((displayWidth/2) - 6, 50, pic_kcal);
+	    //dc.drawBitmap((displayWidth/.5) - 6, 0, pic_steps);
+	    //dc.drawBitmap((displayWidth/2) - 6 , 25, pic_way);
+	    dc.drawBitmap((displayWidth*.75) - 6, 50, pic_kcal);
          
         //draw circles  
         dc.setColor(0xf4d142, Graphics.COLOR_GREEN);
