@@ -1,6 +1,5 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
 	<bitmap id="id_kcal" filename="kcal.png"/>
-	<bitmap id="id_steps" filename="steps.png"/>
-	<bitmap id="id_way" filename="way.png"/>
+	<bitmap id="id_steps" filename="steps.png"/>  
 </drawables>

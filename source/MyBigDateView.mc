@@ -37,7 +37,6 @@ class MyBigDateView extends Ui.WatchFace {
 	    
 	    displayHeight = dc.getHeight();
         displayWidth = dc.getWidth();
-		Sys.println("height: " + displayHeight + " width: " + displayWidth);
 		
 		bigDate();
 		currentTime();
@@ -52,42 +51,44 @@ class MyBigDateView extends Ui.WatchFace {
 		var mySteps = ActivityMonitor.getInfo().steps;
 		var stepGoal = ActivityMonitor.getInfo().stepGoal;
 		var stepViewString = Lang.format("$1$", [mySteps.format("%02d")]);
-		var stepView = null; 
+		var stepView = View.findDrawableById("StepLabel");
 		
 		if (mySteps >= stepGoal) {
-			stepView = View.findDrawableById("StepGoalLabel");
+			stepView.setColor(App.getApp().getProperty("GoalAchievedColor"));	
 		} else {
-			stepView = View.findDrawableById("StepLabel");
+			stepView.setColor(App.getApp().getProperty("GoalInProgressColor"));
 		}
 		stepView.setText(stepViewString);
 		
-		//battery %
+		//battery % - TODO refactor this into battery function ???
 		var myBattery = Sys.getSystemStats().battery;
 		var batteryViewString = Lang.format("$1$", [myBattery.format("%02d")]);
 		var batteryView = View.findDrawableById("BatteryLabel");
-		batteryView.setText(batteryViewString);
+		
+		//unit test various settings, comment out 
+     	//myBattery = 100;
+    	//batteryViewString = "100";
+		batteryView.setText(batteryViewString + "%");
 
  		//Sys.println("steps: " + mySteps + " battery: " + myBattery + " step Goal: " + stepGoal + " calories: " + myCalories);
- 		   			
+    			
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
-        		
-		// load images from drawables and center
-	    var pic_steps = Ui.loadResource(Rez.Drawables.id_steps);    
-	    //var pic_way = Ui.loadResource(Rez.Drawables.id_way);
-	    var pic_kcal = Ui.loadResource(Rez.Drawables.id_kcal);
-	    dc.drawBitmap((displayWidth/2) - 6, 0, pic_steps);
-	    //dc.drawBitmap((displayWidth/.5) - 6, 0, pic_steps);
-	    //dc.drawBitmap((displayWidth/2) - 6 , 25, pic_way);
-	    dc.drawBitmap((displayWidth*.75) - 6, 50, pic_kcal);
          
         //draw circles  
-        dc.setColor(0xf4d142, Graphics.COLOR_GREEN);
+        //TODO: put color into layout.xml
+        dc.setColor(0xffff00, Graphics.COLOR_GREEN);
         dc.setPenWidth(2);
-    	dc.drawCircle(displayWidth/4, 30, 40);   //45 and 165 fillRectangle(100, 100, 100, 100);
-    	//var fromRight = displayWidth/4
+    	dc.drawCircle(displayWidth/4, 30, 40);
     	dc.drawCircle(displayWidth - (displayWidth/4), 30, 40);
-
+    	
+    	drawAndDisplayBattery(dc, myBattery, batteryViewString);	 
+    			
+		// load images from drawables
+	    var pic_steps = Ui.loadResource(Rez.Drawables.id_steps);    
+	    var pic_kcal = Ui.loadResource(Rez.Drawables.id_kcal);
+	    dc.drawBitmap((displayWidth*.25) - 6, 50, pic_steps);
+	    dc.drawBitmap((displayWidth*.75) - 6, 50, pic_kcal);
     }
 
     // Called when this View is removed from the screen. Save the
@@ -115,7 +116,7 @@ class MyBigDateView extends Ui.WatchFace {
 	        today.month,
 	        today.day
 	    ] );
-		Sys.println(dateString);
+		//Sys.println(dateString);
 
         var dateView = View.findDrawableById("DateLabel");
         dateView.setText(dateString);       
@@ -145,5 +146,46 @@ class MyBigDateView extends Ui.WatchFace {
  		//use this to read from properties.xml to set color
         //timeView.setColor(App.getApp().getProperty("ForegroundColor")); 
         timeView.setText(timeString);	
- 	}       
+ 	}   
+ 	
+ 	/** Deals with the battery meter display, based on remaining battery life */
+ 	function drawAndDisplayBattery(dc, myBattery, batteryViewString) {
+     	
+    	//logic to display battery meter
+    	if (myBattery >= 80) {
+    		//Sys.println("batt > 80: " + batteryViewString);
+    		dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)-10,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)+15,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)+40,(displayHeight*.82),20,3);
+    	} else if (myBattery >= 60 && myBattery <80) {
+    		//Sys.println("batt between 60-80: " + batteryViewString);
+    		dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)-10,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)+15,(displayHeight*.82),20,3);
+    	} else if (myBattery >= 40 && myBattery <60) {
+    		//Sys.println("batt between 40-60: " + batteryViewString);
+    		dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
+	    	dc.drawRectangle((displayWidth/2)-10,(displayHeight*.82),20,3);
+    	} else if (myBattery >= 20 && myBattery < 40) {
+    		//Sys.println("batt between 20-40: " + batteryViewString);
+    		dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
+    	} else if (myBattery >= 10 && myBattery < 20) {
+    		//Sys.println("batt between 10-20: " + batteryViewString);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
+    	} else {
+    		//Sys.println("batt less than 10: " + batteryViewString);
+	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    }
+    	
+ 	}    
 }
