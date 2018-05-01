@@ -1,10 +1,8 @@
 <layout id="WatchFace">
     <drawable class="Background" />
     <label id="TimeLabel" x="center" y="center" font="Gfx.FONT_SYSTEM_NUMBER_HOT" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" />
-    <label id="DateLabel" x="center" y="115" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" />  
-    
-    <label id="StepLabel" x="55" y="20" font="Gfx.FONT_SYSTEM_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" />
-    
+    <label id="DateLabel" x="center" y="115" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" />     
+    <label id="StepLabel" x="55" y="20" font="Gfx.FONT_SYSTEM_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" />
     <label id="BatteryLabel" x="110" y="150" font="Gfx.FONT_SYSTEM_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" /> 
     <label id="CaloriesLabel" x="160" y="20" font="Gfx.FONT_SYSTEM_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" color="#ffffff" />   
 </layout>

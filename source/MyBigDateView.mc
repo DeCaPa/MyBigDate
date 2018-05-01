@@ -7,10 +7,13 @@ using Toybox.Application as App;
 using Toybox.ActivityMonitor;
 
 /**
-
-Pixel Size of each screen this watch face is used for. 
-735xt: 215x180 | 935: 240x240 | fenix 5x 240x240 | fenix 5 240x240
-
+ * Simple Garmin Watchface with a focus on larger fonts for date, calories, steps and battery life.  
+ * 
+ * initial release for the Garmin 735xt.  Other sizes may come.
+ *
+ * Pixel Size of each screen this watch face is used for (or provided in a subsequent release: 
+ * 735xt: 215x180 | 935: 240x240 | fenix 5x 240x240 | fenix 5 240x240
+ *
 **/
 class MyBigDateView extends Ui.WatchFace {
 
@@ -52,15 +55,17 @@ class MyBigDateView extends Ui.WatchFace {
 		var stepGoal = ActivityMonitor.getInfo().stepGoal;
 		var stepViewString = Lang.format("$1$", [mySteps.format("%02d")]);
 		var stepView = View.findDrawableById("StepLabel");
-		
-		if (mySteps >= stepGoal) {
-			stepView.setColor(App.getApp().getProperty("GoalAchievedColor"));	
+
+		stepView.setText(stepViewString);	
+	    
+	    //when goal is reached change color to green
+	    if (mySteps >= stepGoal) {
+			stepView.setColor(App.getApp().getProperty("GoalAchievedColor"));
 		} else {
 			stepView.setColor(App.getApp().getProperty("GoalInProgressColor"));
 		}
-		stepView.setText(stepViewString);
-		
-		//battery % - TODO refactor this into battery function ???
+				
+		//battery %
 		var myBattery = Sys.getSystemStats().battery;
 		var batteryViewString = Lang.format("$1$", [myBattery.format("%02d")]);
 		var batteryView = View.findDrawableById("BatteryLabel");
@@ -89,6 +94,7 @@ class MyBigDateView extends Ui.WatchFace {
 	    var pic_kcal = Ui.loadResource(Rez.Drawables.id_kcal);
 	    dc.drawBitmap((displayWidth*.25) - 6, 50, pic_steps);
 	    dc.drawBitmap((displayWidth*.75) - 6, 50, pic_kcal);
+
     }
 
     // Called when this View is removed from the screen. Save the
@@ -180,11 +186,11 @@ class MyBigDateView extends Ui.WatchFace {
 	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
     	} else if (myBattery >= 10 && myBattery < 20) {
     		//Sys.println("batt between 10-20: " + batteryViewString);
+	    	dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
 	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
-	    	dc.drawRectangle((displayWidth/2)-35,(displayHeight*.82),20,3);
     	} else {
     		//Sys.println("batt less than 10: " + batteryViewString);
-	    	dc.drawRectangle((displayWidth/2)-50,(displayHeight*.82),10,3);
+	    	dc.drawRectangle((displayWidth/2)-65,(displayHeight*.82),10,3);
 	    }
     	
  	}    
